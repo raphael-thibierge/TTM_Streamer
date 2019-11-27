@@ -1,41 +1,36 @@
-from Trade import Trade
-from AggregateTrade import AggregateTrade
-from Kline import Kline
-from Ticker import Ticker
-from BookTicker import BookTicker
-from Database import Database
-import BinanceManager
-
-# load env
+# load dependencies
+from src.Database import Database
+from src import BinanceManager, BinanceToInfux
 from dotenv import load_dotenv
-load_dotenv()
 
 
-db = Database()
-
-
-def multi_process(msg):
-    msg = msg['data']
+def multi_process(data):
+    global db
+    data = data['data']
     measurement = None
 
-    if 'e' not in msg and 'u' in msg:
-        measurement = BookTicker.msg_to_measurement(msg)
+    if 'e' not in data and 'u' in data:
+        measurement = BinanceToInfux.bookticker_to_measurement(data)
     else:
-        event = msg['e']
+        event = data['e']
         if 'aggTrade' in event:
-            measurement = AggregateTrade.msg_to_measurement(msg)
+            measurement = BinanceToInfux.aggtrade_to_measurement(data)
         elif 'trade' in event:
-            measurement = Trade.msg_to_measurement(msg)
+            measurement = BinanceToInfux.trade_to_measurement(data)
         elif 'kline' in event:
-            measurement = Kline.msg_to_measurement(msg)
+            measurement = BinanceToInfux.kline_to_measurement(data)
         elif '24hrTicker' in event:
-            measurement = Ticker.msg_to_measurement(msg)
+            measurement = BinanceToInfux.ticker_to_measurement(data)
         else:
-            print(msg)
+            print(data)
 
     if measurement is not None:
         db.store_measurement(measurement)
 
+
+load_dotenv()
+
+db = Database()
 
 print("Open Binance API client...")
 bm = BinanceManager.get_binance_websocket_manager()
@@ -47,7 +42,6 @@ print(">>> " + ','.join(symbols))
 print("Preparing streams...".format(len(symbols) * len(BinanceManager.stream_types)))
 streams = BinanceManager.get_all_streams(symbols)
 print(">>> {} streams".format(len(streams)))
-
 
 print("Start streaming...")
 bm.start_multiplex_socket(streams, multi_process)
