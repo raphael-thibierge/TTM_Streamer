@@ -16,6 +16,7 @@ stream_types = [
     'kline_6h',
     'kline_12h',
     'kline_1d',
+    'depth'
 ]
 
 def get_binance_client():

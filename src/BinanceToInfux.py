@@ -112,3 +112,19 @@ def trade_to_measurement(data):
             'a': data['a'],          # Seller order ID
         },
     }
+
+
+def depth_to_measurement(data):
+    return {
+        'measurement': data['e'],  # Event type
+        'time': utils.timestamp_to_datetime(data['E']),  # Event time
+        'tags': {
+            's': data['s'],  # Symbol
+        },
+        'fields': {
+            'U': data['U'],  # First update ID in event
+            'u': data['p'],  # Final update ID in event
+            'b': data['b'],  # Bids to be updated
+            'a': data['a'],  # Asks to be updated
+        },
+    }

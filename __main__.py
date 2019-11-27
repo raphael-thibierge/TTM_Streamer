@@ -21,6 +21,8 @@ def multi_process(data):
             measurement = BinanceToInfux.kline_to_measurement(data)
         elif '24hrTicker' in event:
             measurement = BinanceToInfux.ticker_to_measurement(data)
+        elif 'depthUpdate' in event:
+            measurement = BinanceToInfux.depth_to_measurement(data)
         else:
             print(data)
 
@@ -47,3 +49,6 @@ print("Start streaming...")
 bm.start_multiplex_socket(streams, multi_process)
 bm.start()
 print(">>> started")
+
+
+
