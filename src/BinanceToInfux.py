@@ -1,5 +1,5 @@
 from src import utils
-
+import json
 
 def aggtrade_to_measurement(msg):
     return {
@@ -123,8 +123,8 @@ def depth_to_measurement(data):
         },
         'fields': {
             'U': data['U'],  # First update ID in event
-            'u': data['p'],  # Final update ID in event
-            'b': data['b'],  # Bids to be updated
-            'a': data['a'],  # Asks to be updated
+            'u': data['u'],  # Final update ID in event
+            'b': json.dumps(data['b']),  # Bids to be updated
+            'a': json.dumps(data['a']),  # Asks to be updated
         },
     }

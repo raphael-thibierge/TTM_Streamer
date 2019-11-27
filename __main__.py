@@ -38,7 +38,7 @@ print("Open Binance API client...")
 bm = BinanceManager.get_binance_websocket_manager()
 
 print("Preparing symbols...")
-symbols = BinanceManager.compute_symbols()
+symbols = BinanceManager.get_symbols()
 print(">>> " + ','.join(symbols))
 
 print("Preparing streams...".format(len(symbols) * len(BinanceManager.stream_types)))

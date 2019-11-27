@@ -16,8 +16,9 @@ stream_types = [
     'kline_6h',
     'kline_12h',
     'kline_1d',
-    'depth'
+    'depth@100ms'
 ]
+
 
 def get_binance_client():
     key = os.getenv('BINANCE_API_KEY')
@@ -53,7 +54,7 @@ def load_default_symbols():
     return symbols.split(',')
 
 
-def compute_symbols():
+def get_symbols():
     currencies = load_currencies()
     references = load_references()
     symbols = load_default_symbols()
